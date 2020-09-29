@@ -20,7 +20,7 @@
 #include <set>
 using namespace std;
 
-int N = 12;
+Graph g(12);
 const int total = 1025;
 
 void printLanterns(int v, int w);
@@ -30,7 +30,7 @@ int myrandom(int i) { return std::rand() % i; }
 int contagem = 0;
 int arestas;
 
-Graph g;
+
 int table[total][total];
 int vertexColor[total][total];
 int lanterns[total][total];
@@ -38,10 +38,10 @@ int lanterns[total][total];
 // Variable inicialization
 void start()
 {
-	arestas = (N * (N - 1)) / 2;
-	for (int i = 0; i < N; i++)
+	arestas = (g.getN() * (g.getN() - 1)) / 2;
+	for (int i = 0; i < g.getN(); i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < g.getN(); j++)
 		{
 			table[i][j] = 0;
 			lanterns[i][j] = 0;
@@ -52,9 +52,9 @@ void start()
 
 void printLanterns()
 {
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < g.getN(); i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < g.getN(); j++)
 		{
 			cout << setw(3) << lanterns[i][j];
 		}
@@ -64,10 +64,10 @@ void printLanterns()
 
 void printFactorizationsICD()
 {
-	for (int j = 1; j < N; j++)
+	for (int j = 1; j < g.getN(); j++)
 	{
 		cout << j;
-		for (int i = 0; i < N; i++)
+		for (int i = 0; i < g.getN(); i++)
 		{
 			if (i < vertexColor[i][j])
 				switch (j)
@@ -110,10 +110,10 @@ void printFactorizationsICD()
 
 void printFactorizationsHCD()
 {
-	for (int j = 1; j < N; j++)
+	for (int j = 1; j < g.getN(); j++)
 	{
 		cout << char(64 + j) << "\t";
-		for (int i = 0; i < N; i++)
+		for (int i = 0; i < g.getN(); i++)
 		{
 			if (i < vertexColor[i][j])
 				switch (j)
@@ -189,9 +189,9 @@ void printFactorizationsHCD()
 void print()
 {
 	cout << "NxN table:" << endl;
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < g.getN(); i++)
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < g.getN(); j++)
 		{
 			//cout<<setw(4)<<table[i][j];
 			switch (table[i][j])
@@ -232,22 +232,12 @@ void print()
 	}
 }
 
-void print3(){
-	for(int j=1; j < N; j++){
-		for(int i=0; i < N; i++)
-			if( i < vertexColor[i][j])
-				cout<<uppercase<<hex<<i<<vertexColor[i][j]<<" ";
-		cout<<" ";
-	}
-	cout<<endl;
-}
-
 void print2()
 {
 	cout << "Vertices x colors table:" << endl;
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < g.getN(); i++)
 	{
-		for (int j = 1; j < N; j++)
+		for (int j = 1; j < g.getN(); j++)
 		{
 			switch (j)
 			{
@@ -279,12 +269,12 @@ bool isPerfect()
 {
 
 	int end, count, w;
-	for (int v = 0; v < N; v++)
+	for (int v = 0; v < g.getN(); v++)
 	{
 
 		end = v;
-		for (int c1 = 1; c1 < N; c1++)
-			for (int c2 = c1 + 1; c2 < N; c2++)
+		for (int c1 = 1; c1 < g.getN(); c1++)
+			for (int c2 = c1 + 1; c2 < g.getN(); c2++)
 			{
 				count = 0;
 				w = v;
@@ -294,7 +284,7 @@ bool isPerfect()
 					w = end;
 					count += 2;
 				} while (w != v);
-				if (count < N)
+				if (count < g.getN())
 				{
 					//cout<<"Not Perfect"<<endl;
 					return false;
@@ -309,27 +299,27 @@ bool isPerfect()
 bool isAbsolut()
 {
 	// Declares two auxiliar data structures
-	vector<bool> vertex(N,false);
-	for (int i = 1; i < pow(2,N); i++)
+	vector<bool> vertex(g.getN(),false);
+	for (int i = 1; i < pow(2,g.getN()); i++)
 	{
 		int n = i;
 		int j = 0;
 		fill(vertex.begin(), vertex.end(), 0);
-		while (n > 0 && j < N)
+		while (n > 0 && j < g.getN())
 		{
 			vertex[j++] = (n & 1);
 			n = n >> 1;
 		}
 		int amount = 0;
 		amount = accumulate(vertex.begin(),vertex.end(),amount);
-		if(amount % 2 || amount == N || amount <= 2)
+		if(amount % 2 || amount == g.getN() || amount <= 2)
 			continue;	
 
-		vector<bool> acolor (N,false);
+		vector<bool> acolor (g.getN(),false);
 		bool absolute = false;
-		for(int v = 0; v < N; v++){
+		for(int v = 0; v < g.getN(); v++){
 			if(vertex[v]){
-				for(int w = v+1; w < N; w++){
+				for(int w = v+1; w < g.getN(); w++){
 					if(vertex[w])
 						acolor[table[v][w]] = true;
 				}
@@ -357,11 +347,11 @@ bool isBright()
 	int n1, n2;
 	int count = 0;
 	int maxcount = count;
-	int mincount = N;
+	int mincount = g.getN();
 	int pivot;
-	for (int v = 0; v < N; v++)
-		for (int w = v + 1; w < N; w++)
-			for (int c = 1; c < N; c++)
+	for (int v = 0; v < g.getN(); v++)
+		for (int w = v + 1; w < g.getN(); w++)
+			for (int c = 1; c < g.getN(); c++)
 				if (c != table[v][w])
 				{
 					pivot = vertexColor[v][c];
@@ -375,7 +365,7 @@ bool isBright()
 					} while (n2 != pivot);
 					maxcount = max(count, maxcount);
 					mincount = min(count, mincount);
-					if (count < N - 2)
+					if (count < g.getN() - 2)
 					{
 						// printLanterns(v,w);
 						// print();
@@ -397,11 +387,11 @@ bool isMiserable()
 	int n1, n2;
 	int count = 0;
 	int maxcount = count;
-	int mincount = N;
+	int mincount = g.getN();
 	int pivot;
-	for (int v = 0; v < N; v++)
-		for (int w = v + 1; w < N; w++)
-			for (int c = 1; c < N; c++)
+	for (int v = 0; v < g.getN(); v++)
+		for (int w = v + 1; w < g.getN(); w++)
+			for (int c = 1; c < g.getN(); c++)
 				if (c != table[v][w])
 				{
 					pivot = vertexColor[v][c];
@@ -417,7 +407,7 @@ bool isMiserable()
 					// if(maxcount == 4)
 					// 	cout<<v<<" "<<w<<endl;
 					mincount = min(count, mincount);
-					if (count >= N - 2)
+					if (count >= g.getN() - 2)
 					{
 						// cout<<v<<" "<<w<<endl;
 						return false;
@@ -435,19 +425,19 @@ void countLanterns()
 	int n1, n2;
 	int count = 0;
 	int maxcount = count;
-	int mincount = N;
+	int mincount = g.getN();
 	int pivot;
 
-	bool usedColor[N];
-	for (int c = 1; c < N; c++)
+	bool usedColor[g.getN()];
+	for (int c = 1; c < g.getN(); c++)
 		usedColor[c] = false;
 
-	for (int v = 0; v < N; v++)
-		for (int w = v + 1; w < N; w++)
+	for (int v = 0; v < g.getN(); v++)
+		for (int w = v + 1; w < g.getN(); w++)
 		{
-			for (int d = 1; d < N; d++)
+			for (int d = 1; d < g.getN(); d++)
 				usedColor[d] = false;
-			for (int c = 1; c < N; c++)
+			for (int c = 1; c < g.getN(); c++)
 				if (c != table[v][w] && !usedColor[c])
 				{
 					usedColor[c] = true;
@@ -475,7 +465,7 @@ void printLanterns(int v, int w)
 	int count = 0;
 	int pivot;
 	int n1, n2, n3;
-	for (int c = 1; c < N; c++)
+	for (int c = 1; c < g.getN(); c++)
 	{
 		if (c != table[v][w])
 		{
@@ -590,7 +580,7 @@ void deleteColor(int c, pair<int, int> aresta)
 pair<int, int> proxima(pair<int, int> aresta)
 {
 	aresta.second++;
-	if (aresta.second == N)
+	if (aresta.second == g.getN())
 	{
 		aresta.second = aresta.first + 2;
 		aresta.first++;
@@ -609,13 +599,13 @@ bool buildRandom(pair<int, int> aresta)
 		return true;
 	}
 
-	vector<int> cor(N - 1, 0);
-	for (int c = 1; c < N; c++)
+	vector<int> cor(g.getN() - 1, 0);
+	for (int c = 1; c < g.getN(); c++)
 		cor[c - 1] = c;
 
 	// random_shuffle(cor.begin(), cor.end());
 
-	for (int c = 0; c < N - 1; c++)
+	for (int c = 0; c < g.getN() - 1; c++)
 		if (isSafe(cor[c], aresta))
 		{
 			insertColor(cor[c], aresta);
@@ -638,7 +628,7 @@ bool buildMiserable(pair<int, int> aresta)
 			return true;
 	}
 
-	for (int c = 1; c < N; c++)
+	for (int c = 1; c < g.getN(); c++)
 		if (isSafe(c, aresta))
 		{
 			insertColor(c, aresta);
@@ -651,9 +641,9 @@ bool buildMiserable(pair<int, int> aresta)
 
 void Canonical()
 {
-	int n = N / 2;
+	int n = g.getN() / 2;
 	int a, b;
-	for (int i = 1; i <= N - 1; i++)
+	for (int i = 1; i <= g.getN() - 1; i++)
 	{
 		a = i % (2 * n - 1);
 		b = 2 * n - 1;
@@ -674,67 +664,32 @@ void Canonical()
 	}
 }
 
-void Circle()
-{
+// void makeList()
+// {
+// 	cout << "N \t Bri? \t Mis? \t Per?" << endl;
+// 	for (N = 4; N <= 1024; N += 2)
+// 	{
+// 		cout << N << " \t ";
+// 		start();
+// 		Canonical();
+// 		if (isBright())
+// 			cout << "Yes \t ";
+// 		else
+// 			cout << "No \t ";
 
-	int temp, a, b;
+// 		if (isMiserable())
+// 			cout << "Yes \t ";
+// 		else
+// 			cout << "No \t ";
 
-	int circle[N];
-	for (int i = 0; i < N; i++)
-		circle[i] = i;
-
-	for (int i = 0; i < N - 1; i++)
-	{
-		a = circle[N - 1];
-		b = circle[0];
-		table[a][b] = i + 1;
-		table[b][a] = i + 1;
-		for (int k = 1; k < N / 2; k++)
-		{
-			a = circle[k];
-			b = circle[N - 1 - k];
-			table[a][b] = i + 1;
-			table[b][a] = i + 1;
-		}
-		temp = circle[0];
-		for (int j = 0; j < N - 1; j++)
-		{
-			circle[j] = circle[j + 1];
-		}
-		circle[N - 2] = temp;
-	}
-
-	for (int v = 0; v < N; v++)
-		for (int w = 0; w < N; w++)
-			vertexColor[v][table[v][w]] = w;
-}
-
-void makeList()
-{
-	cout << "N \t Bri? \t Mis? \t Per?" << endl;
-	for (N = 4; N <= 1024; N += 2)
-	{
-		cout << N << " \t ";
-		start();
-		Canonical();
-		if (isBright())
-			cout << "Yes \t ";
-		else
-			cout << "No \t ";
-
-		if (isMiserable())
-			cout << "Yes \t ";
-		else
-			cout << "No \t ";
-
-		if (isPerfect())
-			cout << "Yes \t ";
-		else
-			cout << "No \t ";
-		cout << endl;
-	}
-	exit(0);
-}
+// 		if (isPerfect())
+// 			cout << "Yes \t ";
+// 		else
+// 			cout << "No \t ";
+// 		cout << endl;
+// 	}
+// 	exit(0);
+// }
 
 int convertToInteger(char c){
 	switch(c){
@@ -768,14 +723,16 @@ int convertToInteger(char c){
 
 int main(int argc, char* argv[])
 {
+	int n;
+	
 	if(argc == 1){
-		Circle();
 		print();
 		print2();
-		print3();
 		return 0;
 	}
-
+	
+	g.Circle();
+	
 	int F;
 	string factor;
 	ifstream arquivo;
@@ -783,7 +740,8 @@ int main(int argc, char* argv[])
 		arquivo.open(argv[1]);
 	else
 		cout<<"Need input file"<<endl;
-	arquivo >> N >> F;
+	arquivo >> n >> F;
+	g.setN(n);
 	int ca = 0;
 	int cm = 0;
 	int cp = 0;
@@ -793,9 +751,9 @@ int main(int argc, char* argv[])
 
 	for (int i = 0; i < F; i++)
 	{
-		for(int j = 0; j < N-1; j++){
+		for(int j = 0; j < g.getN()-1; j++){
 			int v,w,c;
-			for(int k = 0; k < N; k+=2){
+			for(int k = 0; k < g.getN(); k+=2){
 				arquivo>>factor;
 				// cout<<factor<<endl;
 				v = convertToInteger(factor[0]);
@@ -894,10 +852,7 @@ int main(int argc, char* argv[])
 
 	return 0;
 
-	Circle();
-	cout << __LINE__ << endl;
-
-	cout << __LINE__ << endl;
+	
 	if (isBright())
 		cout << "isBright" << endl;
 	else
@@ -908,75 +863,75 @@ int main(int argc, char* argv[])
 
 	printFactorizationsICD();
 
-	char answer;
-	int format;
-	int v, w;
-	cout << red << "\nLes Miserables!\n"
-		 << deff;
-	cout << "Tell me the number of vertices: ";
-	cin >> N;
-	std::srand(unsigned(std::time(0)));
-	start();
-	pair<int, int> aresta(0, 1);
+	// char answer;
+	// int format;
+	// int v, w;
+	// cout << red << "\nLes Miserables!\n"
+	// 	 << deff;
+	// cout << "Tell me the number of vertices: ";
+	// cin >> N;
+	// std::srand(unsigned(std::time(0)));
+	// start();
+	// pair<int, int> aresta(0, 1);
 
-	if (buildRandom(aresta))
-	{
-		// if(buildMiserable(aresta)){
-		if (isPerfect())
-		{
-			cout << magenta << "\e[1;4m-->This factorization is also perfect<--\e[0m" << deff << endl;
-		}
-		else
-			cout << nine << "\e[1;4m-->This factorization is NOT perfect<--\e[0m" << deff << endl;
+	// if (buildRandom(aresta))
+	// {
+	// 	// if(buildMiserable(aresta)){
+	// 	if (isPerfect())
+	// 	{
+	// 		cout << magenta << "\e[1;4m-->This factorization is also perfect<--\e[0m" << deff << endl;
+	// 	}
+	// 	else
+	// 		cout << nine << "\e[1;4m-->This factorization is NOT perfect<--\e[0m" << deff << endl;
 
-		cout << endl;
-		cout << "Choose your output format: \n";
-		cout << green << "1 - W.D. Wallis, Introduction to Combinatorial Designs." << endl;
-		cout << blue << "2 - Charles J. Colbourn and Jeffrey H. Dinitz, Handbook of Combinatorial Designs." << deff << endl;
-		cout << "Choose wisely ("
-			 << green << 1 << deff << "/"
-			 << blue << 2 << deff << "): ";
-		cin >> format;
-		if (format == 1)
-			printFactorizationsICD();
-		else
-			printFactorizationsHCD();
-		cout << endl;
-	}
-	else
-	{
-		cout << "Fail " << N << endl;
-		print();
-	}
+	// 	cout << endl;
+	// 	cout << "Choose your output format: \n";
+	// 	cout << green << "1 - W.D. Wallis, Introduction to Combinatorial Designs." << endl;
+	// 	cout << blue << "2 - Charles J. Colbourn and Jeffrey H. Dinitz, Handbook of Combinatorial Designs." << deff << endl;
+	// 	cout << "Choose wisely ("
+	// 		 << green << 1 << deff << "/"
+	// 		 << blue << 2 << deff << "): ";
+	// 	cin >> format;
+	// 	if (format == 1)
+	// 		printFactorizationsICD();
+	// 	else
+	// 		printFactorizationsHCD();
+	// 	cout << endl;
+	// }
+	// else
+	// {
+	// 	cout << "Fail " << N << endl;
+	// 	print();
+	// }
 
-	cout << "Do you want to print some lanterns (Y/N)? ";
-	cin >> answer;
+	// cout << "Do you want to print some lanterns (Y/N)? ";
+	// cin >> answer;
 
-	if (answer == 'Y' || answer == 'y')
-	{
-		cout << nine << "Take a look at the table below to see how many lanterns there are between two vertices." << deff << endl;
-		countLanterns();
-		printLanterns();
-		do
-		{
-			cout << "\nGive me the first vertex (-1 to exit): ";
-			cin >> v;
-			if (v == -1)
-				break;
-			cout << "Now give me the second vertex (-1 to exit): ";
-			cin >> w;
-			if (w == -1)
-				break;
-			if (v == w || v < 0 || w < 0 || v >= N || w > N)
-				cout << red << "\nThe first and second vertices must be different and range between 0 and " << N - 1 << ". Please, try again!\n"
-					 << deff << endl;
-			else
-			{
-				cout << "Printing some lanterns... " << endl;
-				printLanterns(v, w);
-			}
-		} while (true);
-	}
-	cout << "Bye... \n";
-	return 0;
+	// if (answer == 'Y' || answer == 'y')
+	// {
+	// 	cout << nine << "Take a look at the table below to see how many lanterns there are between two vertices." << deff << endl;
+	// 	countLanterns();
+	// 	printLanterns();
+	// 	do
+	// 	{
+	// 		cout << "\nGive me the first vertex (-1 to exit): ";
+	// 		cin >> v;
+	// 		if (v == -1)
+	// 			break;
+	// 		cout << "Now give me the second vertex (-1 to exit): ";
+	// 		cin >> w;
+	// 		if (w == -1)
+	// 			break;
+	// 		if (v == w || v < 0 || w < 0 || v >= N || w > N)
+	// 			cout << red << "\nThe first and second vertices must be different and range between 0 and " << N - 1 << ". Please, try again!\n"
+	// 				 << deff << endl;
+	// 		else
+	// 		{
+	// 			cout << "Printing some lanterns... " << endl;
+	// 			printLanterns(v, w);
+	// 		}
+	// 	} while (true);
+	// }
+	// cout << "Bye... \n";
+	// return 0;
 }
