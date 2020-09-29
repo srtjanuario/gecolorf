@@ -20,7 +20,7 @@
 #include <set>
 using namespace std;
 
-int N = 14;
+int N = 12;
 const int total = 1025;
 
 void printLanterns(int v, int w);
@@ -768,11 +768,13 @@ int convertToInteger(char c){
 
 int main(int argc, char* argv[])
 {
-	// Circle();
-	// print();
-	// print2();
-	// print3();
-	// return 0;
+	if(argc == 1){
+		Circle();
+		print();
+		print2();
+		print3();
+		return 0;
+	}
 
 	int F;
 	string factor;
