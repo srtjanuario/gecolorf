@@ -32,3 +32,4 @@
 *.app
 a.out.dSYM/Contents/Info.plist
 src/main
+gecolorf
