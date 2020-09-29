@@ -2,6 +2,7 @@
 #include "graph.h"
 #include "colormod.h"
 #include "prints.h"
+#include "utils.h"
 
 // STL
 #include <iostream>
@@ -28,6 +29,8 @@ void printLanterns(int v, int w);
 int myrandom(int i) { return std::rand() % i; }
 int contagem = 0;
 int arestas;
+
+Graph g;
 int table[total][total];
 int vertexColor[total][total];
 int lanterns[total][total];
@@ -335,8 +338,12 @@ bool isAbsolut()
 		int Y = 0;
 		Y = accumulate(acolor.begin(),acolor.end(),Y);
 		if(Y == amount -1){
+			// cout<<endl;
 			// for(auto v: vertex)
 			// 	cout<<v<<" ";
+			// cout<<endl;
+			// for(auto a: acolor)
+			// 	cout<<a<<" ";
 			// cout<<endl;
 			return false;
 		}
@@ -407,12 +414,16 @@ bool isMiserable()
 						count++;
 					} while (n2 != pivot);
 					maxcount = max(count, maxcount);
+					// if(maxcount == 4)
+					// 	cout<<v<<" "<<w<<endl;
 					mincount = min(count, mincount);
 					if (count >= N - 2)
 					{
+						// cout<<v<<" "<<w<<endl;
 						return false;
 					}
 				}
+	// cout<<mincount<<" "<<maxcount<<endl;
 	// cout<<"Miserable found for N equals to "<<N<<endl;
 	// cout << "Largest lantern: " << maxcount << endl;
 	// cout << "Smallest lantern: " << mincount << endl;
