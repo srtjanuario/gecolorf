@@ -5,6 +5,9 @@
 		"string": "cpp",
 		"ostream": "cpp",
 		"ios": "cpp",
-		"numeric": "cpp"
+		"numeric": "cpp",
+		"__config": "cpp",
+		"algorithm": "cpp",
+		"random": "cpp"
 	}
 }
