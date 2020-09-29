@@ -1,4 +1,4 @@
-CPLEX_VERSION = 12.10
+executavel = gecolorf
 
 #detecta se o sistema é de 32 ou 64 bits
 BITS_OPTION = -m64
@@ -36,7 +36,7 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 #############################
 
 #### regra principal, gera o executavel
-2ecvrp: $(OBJS) 
+$(executavel): $(OBJS) 
 	@echo  "\033[31m \nLinking all objects files: \033[0m"
 	$(CPPC) $(BITS_OPTION) $(OBJS) -o $@ $(CCLNFLAGS)
 ############################
@@ -58,8 +58,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 #delete objetos e arquivos de dependencia
 clean:
 	@echo "\033[31mcleaning obj directory \033[0m"
-	@rm gecolorf $(OBJDIR)/*.o $(OBJDIR)/*.d
+	@rm $(executavel) $(OBJDIR)/*.o $(OBJDIR)/*.d
 	clear
 
-
-rebuild: clean gecolorf
+rebuild: clean $(executavel)
