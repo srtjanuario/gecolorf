@@ -1,19 +1,17 @@
 #include "graph.h"
 
-Graph::Graph(){
+Graph::Graph(int n)
+{
+	N = n;
 	arestas = (N * (N - 1)) / 2;
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
-			table[i][j] = 0;
-			lanterns[i][j] = 0;
-			vertexColor[i][j] = -1;
-		}
-	}
+
+	table = vector<vector<int>>(N, vector<int>(N, 0));
+	lanterns = vector<vector<int>>(N, vector<int>(N, 0));
+	vertexColor = vector<vector<int>>(N, vector<int>(N, -1));
 }
 
-void Graph::Circle(){
+void Graph::Circle()
+{
 
 	int temp, a, b;
 
@@ -47,10 +45,11 @@ void Graph::Circle(){
 			vertexColor[v][table[v][w]] = w;
 }
 
-bool Graph::isAbsolute(){
-		// Declares two auxiliar data structures
-	vector<bool> vertex(N,false);
-	for (int i = 1; i < pow(2,N); i++)
+bool Graph::isAbsolute()
+{
+	// Declares two auxiliar data structures
+	vector<bool> vertex(N, false);
+	for (int i = 1; i < pow(2, N); i++)
 	{
 		int n = i;
 		int j = 0;
@@ -61,30 +60,35 @@ bool Graph::isAbsolute(){
 			n = n >> 1;
 		}
 		int amount = 0;
-		amount = accumulate(vertex.begin(),vertex.end(),amount);
-		if(amount % 2 || amount == N || amount <= 2)
-			continue;	
+		amount = accumulate(vertex.begin(), vertex.end(), amount);
+		if (amount % 2 || amount == N || amount <= 2)
+			continue;
 
-		vector<bool> acolor (N,false);
+		vector<bool> acolor(N, false);
 		bool absolute = false;
-		for(int v = 0; v < N; v++){
-			if(vertex[v]){
-				for(int w = v+1; w < N; w++){
-					if(vertex[w])
+		for (int v = 0; v < N; v++)
+		{
+			if (vertex[v])
+			{
+				for (int w = v + 1; w < N; w++)
+				{
+					if (vertex[w])
 						acolor[table[v][w]] = true;
 				}
 			}
 		}
 		int Y = 0;
-		Y = accumulate(acolor.begin(),acolor.end(),Y);
-		if(Y == amount -1){
+		Y = accumulate(acolor.begin(), acolor.end(), Y);
+		if (Y == amount - 1)
+		{
 			return false;
 		}
 	}
 	return true;
 }
 
-bool Graph::isPerfect(){
+bool Graph::isPerfect()
+{
 	int end, count, w;
 	for (int v = 0; v < N; v++)
 	{
@@ -110,4 +114,16 @@ bool Graph::isPerfect(){
 	}
 	//cout<<"Perfect coloring!"<<endl;
 	return true;
+}
+
+void Graph::toHex()
+{
+	for (int j = 1; j < N; j++)
+	{
+		for (int i = 0; i < N; i++)
+			if (i < vertexColor[i][j])
+				cout << uppercase << hex << i << vertexColor[i][j] << " ";
+		cout << " ";
+	}
+	cout << endl;
 }
